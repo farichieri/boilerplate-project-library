@@ -21,25 +21,31 @@ suite('Functional Tests', function () {
   test('#example Test GET /api/books', function (done) {
     chai
       .request(server)
-      .get('/api/books')
-      .end(function (err, res) {
-        assert.equal(res.status, 200);
-        assert.isArray(res.body, 'response should be an array');
-        assert.property(
-          res.body[0],
-          'commentcount',
-          'Books in array should contain commentcount'
-        );
-        assert.property(
-          res.body[0],
-          'title',
-          'Books in array should contain title'
-        );
-        assert.property(
-          res.body[0],
-          '_id',
-          'Books in array should contain _id'
-        );
+      .post({ title: 'first book' })
+      .end((err, res) => {
+        chai
+          .request(server)
+          .get('/api/books')
+          .end(function (err, res) {
+            assert.equal(res.status, 200);
+            assert.isArray(res.body, 'response should be an array');
+            assert.property(
+              res.body[0],
+              'commentcount',
+              'Books in array should contain commentcount'
+            );
+            assert.property(
+              res.body[0],
+              'title',
+              'Books in array should contain title'
+            );
+            assert.property(
+              res.body[0],
+              '_id',
+              'Books in array should contain _id'
+            );
+          });
+
         done();
       });
   });
@@ -62,13 +68,13 @@ suite('Functional Tests', function () {
               assert.equal(res.status, 200);
               assert.isObject(res.body, 'response should be an object');
               assert.property(
-                res.body[0],
-                title,
+                res.body,
+                'title',
                 'Book in object should contain title'
               );
               assert.property(
-                res.body[0],
-                _id,
+                res.body,
+                '_id',
                 'Book in object should contain _id'
               );
             });
@@ -121,6 +127,7 @@ suite('Functional Tests', function () {
         chai
           .request(server)
           .post('/api/books')
+          .send({ title: 'test title' })
           .end((err, res) => {
             const _id = res.body._id;
 
